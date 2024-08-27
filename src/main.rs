@@ -124,7 +124,7 @@ fn main() {
                         }
                     }
                 }
-                println!("EOf  null");
+                println!("EOF  null");
             } else {
                 writeln!(io::stderr(), "Failed to read file {}", filename).unwrap();
             }
