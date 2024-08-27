@@ -71,6 +71,7 @@ mod tokenizer {
                 ';' => Ok(Token::Semicolon),
                 '.' => Ok(Token::Dot),
                 '*' => Ok(Token::Star),
+                '=' => Ok(Token::Equal),
                 _ => Err(TokenizeError::UnexpectedCharacter(value)),
             }
         }
