@@ -27,12 +27,11 @@ fn main() {
                 for c in file_contents.chars() {
                     match c {
                         '(' => println!("LEFT_PAREN ( null"),
-                        ')' => println!("RIGHT_PAREN ( null"),
+                        ')' => println!("RIGHT_PAREN ) null"),
                         _ => unimplemented!("NOT YET"),
                     }
                 }
-            } else {
-                println!("EOF  null"); // Placeholder, remove this line when implementing the scanner
+                println!("EOF  null")
             }
         }
         _ => {
