@@ -30,6 +30,12 @@ fn main() {
                         ')' => println!("RIGHT_PAREN ) null"),
                         '}' => println!("RIGHT_BRACE }} null"),
                         '{' => println!("LEFT_BRACE {{ null"),
+
+                        '*' => println!("STAR * null"),
+                        '.' => println!("DOT . null"),
+                        '+' => println!("PLUS + null"),
+                        '-' => println!("MINUS - null"),
+                        ',' => println!("COMMA , null"),
                         _ => unimplemented!("NOT YET"),
                     }
                 }
