@@ -17,18 +17,19 @@ mod tokenizer {
         Minus,
         Comma,
         Equal,
+        EqualEqual,
         Semicolon,
     }
 
     pub enum TokenizeError {
-        UnexpectedCharacter(char),
+        UnexpectedCharacter(usize, char),
     }
 
     impl Display for TokenizeError {
         fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
             let err = match &self {
-                TokenizeError::UnexpectedCharacter(c) => {
-                    format!("[line 1] Error: Unexpected character: {c}")
+                TokenizeError::UnexpectedCharacter(line, c) => {
+                    format!("[line {0}] Error: Unexpected character: {1}", line, c)
                 }
             };
 
@@ -50,6 +51,7 @@ mod tokenizer {
                 Token::Comma => "COMMA , null",
                 Token::Semicolon => "SEMICOLON ; null",
                 Token::Equal => "EQUAL = null",
+                Token::EqualEqual => "EQUAL_EQUAL == null",
             };
 
             write!(f, "{}", p)
@@ -72,7 +74,7 @@ mod tokenizer {
                 '.' => Ok(Token::Dot),
                 '*' => Ok(Token::Star),
                 '=' => Ok(Token::Equal),
-                _ => Err(TokenizeError::UnexpectedCharacter(value)),
+                _ => Err(TokenizeError::UnexpectedCharacter(1, value)),
             }
         }
     }
@@ -92,29 +94,36 @@ fn main() {
             // You can use print statements as follows for debugging, they'll be visible when running tests.
             writeln!(io::stderr(), "Logs from your program will appear here!").unwrap();
 
-            let file_contents = fs::read_to_string(filename).unwrap_or_else(|_| {
-                writeln!(io::stderr(), "Failed to read file {}", filename).unwrap();
-                String::new()
-            });
-
             let mut error = false;
-            //Uncomment this block to pass the first stage
-            if !file_contents.is_empty() {
-                for c in file_contents.chars() {
-                    match Token::try_from(c) {
-                        Ok(token) => println!("{}", token),
+            if let Ok(file_contents) = fs::read_to_string(filename) {
+                let mut iter = file_contents.chars().peekable();
+                while let Some(c) = &iter.next() {
+                    match Token::try_from(*c) {
+                        Ok(token) => match token {
+                            Token::Equal => {
+                                if let Some(c) = iter.peek() {
+                                    if *c == '=' {
+                                        println!("{}", Token::EqualEqual)
+                                    } else {
+                                        println!("{}", Token::Equal)
+                                    }
+                                }
+                            }
+                            _ => println!("{}", token),
+                        },
                         Err(err) => {
                             error = true;
                             writeln!(io::stderr(), "{}", err).unwrap()
                         }
                     }
                 }
-                println!("EOF  null");
-                if error {
-                    std::process::exit(65)
-                }
+                println!("EOf  null");
             } else {
-                println!("EOF  null")
+                writeln!(io::stderr(), "Failed to read file {}", filename).unwrap();
+            }
+
+            if error {
+                std::process::exit(65)
             }
         }
         _ => {
