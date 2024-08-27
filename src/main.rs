@@ -16,7 +16,8 @@ mod tokenizer {
         Plus,
         Minus,
         Comma,
-        SemiColon,
+        Equal,
+        Semicolon,
     }
 
     pub enum TokenizeError {
@@ -47,7 +48,8 @@ mod tokenizer {
                 Token::Plus => "PLUS + null",
                 Token::Minus => "MINUS - null",
                 Token::Comma => "COMMA , null",
-                Token::SemiColon => "SEMICOLON ; null",
+                Token::Semicolon => "SEMICOLON ; null",
+                Token::Equal => "EQUAL = null",
             };
 
             write!(f, "{}", p)
@@ -66,7 +68,7 @@ mod tokenizer {
                 '+' => Ok(Token::Plus),
                 '-' => Ok(Token::Minus),
                 ',' => Ok(Token::Comma),
-                ';' => Ok(Token::SemiColon),
+                ';' => Ok(Token::Semicolon),
                 '.' => Ok(Token::Dot),
                 '*' => Ok(Token::Star),
                 _ => Err(TokenizeError::UnexpectedCharacter(value)),
