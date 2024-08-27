@@ -2,6 +2,78 @@ use std::env;
 use std::fs;
 use std::io::{self, Write};
 
+use tokenizer::Token;
+mod tokenizer {
+    use std::fmt::Display;
+
+    pub enum Token {
+        LeftParen,
+        RightParen,
+        LeftBrace,
+        RightBrace,
+        Star,
+        Dot,
+        Plus,
+        Minus,
+        Comma,
+        SemiColon,
+    }
+
+    pub enum TokenizeError {
+        UnexpectedCharacter(char),
+    }
+
+    impl Display for TokenizeError {
+        fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+            let err = match &self {
+                TokenizeError::UnexpectedCharacter(c) => {
+                    format!("[line 1]: Unexpected character: {c}")
+                }
+            };
+
+            write!(f, "{}", err)
+        }
+    }
+
+    impl Display for Token {
+        fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+            let p = match self {
+                Token::LeftParen => "LEFT_PAREN ( null",
+                Token::RightParen => "RIGHT_PAREN ) null",
+                Token::LeftBrace => "LEFT_BRACE { null",
+                Token::RightBrace => "RIGHT_BRACE } null",
+                Token::Star => "STAR * null",
+                Token::Dot => "DOT . null",
+                Token::Plus => "PLUS + null",
+                Token::Minus => "MINUS - null",
+                Token::Comma => "COMMA , null",
+                Token::SemiColon => "SEMICOLON ; null",
+            };
+
+            write!(f, "{}", p)
+        }
+    }
+
+    impl TryFrom<char> for Token {
+        type Error = TokenizeError;
+
+        fn try_from(value: char) -> Result<Self, Self::Error> {
+            match value {
+                '(' => Ok(Token::LeftParen),
+                ')' => Ok(Token::RightParen),
+                '}' => Ok(Token::RightBrace),
+                '{' => Ok(Token::LeftBrace),
+                '+' => Ok(Token::Plus),
+                '-' => Ok(Token::Minus),
+                ',' => Ok(Token::Comma),
+                ';' => Ok(Token::SemiColon),
+                '.' => Ok(Token::Dot),
+                '*' => Ok(Token::Star),
+                _ => Err(TokenizeError::UnexpectedCharacter(value)),
+            }
+        }
+    }
+}
 fn main() {
     let args: Vec<String> = env::args().collect();
     if args.len() < 3 {
@@ -22,25 +94,22 @@ fn main() {
                 String::new()
             });
 
+            let mut error = false;
             //Uncomment this block to pass the first stage
             if !file_contents.is_empty() {
                 for c in file_contents.chars() {
-                    match c {
-                        '(' => println!("LEFT_PAREN ( null"),
-                        ')' => println!("RIGHT_PAREN ) null"),
-                        '}' => println!("RIGHT_BRACE }} null"),
-                        '{' => println!("LEFT_BRACE {{ null"),
-
-                        '*' => println!("STAR * null"),
-                        '.' => println!("DOT . null"),
-                        '+' => println!("PLUS + null"),
-                        '-' => println!("MINUS - null"),
-                        ',' => println!("COMMA , null"),
-                        ';' => println!("SEMICOLON ; null"),
-                        _ => println!("[line 1]: Unexpected character: {c}"),
+                    match Token::try_from(c) {
+                        Ok(token) => println!("{}", token),
+                        Err(err) => {
+                            error = true;
+                            writeln!(io::stderr(), "{}", err).unwrap()
+                        }
                     }
                 }
-                println!("EOF  null")
+                println!("EOF  null");
+                if error {
+                    std::process::exit(65)
+                }
             } else {
                 println!("EOF  null")
             }
