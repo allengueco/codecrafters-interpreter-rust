@@ -31,6 +31,8 @@ fn main() {
                         _ => unimplemented!("NOT YET"),
                     }
                 }
+            } else {
+                println!("EOF  null"); // Placeholder, remove this line when implementing the scanner
             }
         }
         _ => {
