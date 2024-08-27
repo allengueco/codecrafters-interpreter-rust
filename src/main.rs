@@ -100,13 +100,20 @@ fn main() {
                 while let Some(c) = &iter.next() {
                     match Token::try_from(*c) {
                         Ok(token) => match token {
+                            // if the current token is =
                             Token::Equal => {
+                                // we peek the next token if it exists
                                 if let Some(c) = iter.peek() {
+                                    // if the next is also an equal,
                                     if *c == '=' {
+                                        iter.next();
                                         println!("{}", Token::EqualEqual)
                                     } else {
+                                        // if it doesn't exist, then we are at the end
                                         println!("{}", Token::Equal)
                                     }
+                                } else {
+                                    println!("{}", Token::Equal)
                                 }
                             }
                             _ => println!("{}", token),
