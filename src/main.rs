@@ -27,7 +27,7 @@ mod tokenizer {
         fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
             let err = match &self {
                 TokenizeError::UnexpectedCharacter(c) => {
-                    format!("[line 1]: Unexpected character: {c}")
+                    format!("[line 1] Error: Unexpected character: {c}")
                 }
             };
 
