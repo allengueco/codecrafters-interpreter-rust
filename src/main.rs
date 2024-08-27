@@ -37,7 +37,7 @@ fn main() {
                         '-' => println!("MINUS - null"),
                         ',' => println!("COMMA , null"),
                         ';' => println!("SEMICOLON ; null"),
-                        _ => unimplemented!("NOT YET"),
+                        _ => println!("[line 1]: Unexpected character: {c}"),
                     }
                 }
                 println!("EOF  null")
