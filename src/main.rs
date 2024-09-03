@@ -19,6 +19,23 @@ mod tokenizer {
         Equal,
         EqualEqual,
         Semicolon,
+        Bang,
+    }
+
+    pub enum TokenPair {
+        EqualEqual,
+        BangEqual,
+    }
+
+    pub trait Pair {}
+    impl Display for TokenPair {
+        fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+            let pair = match self {
+                TokenPair::BangEqual => "BANG_EQUAL != null",
+                TokenPair::EqualEqual => "EQUAL_EQUAL == null",
+            };
+            write!(f, "{}", pair)
+        }
     }
 
     pub enum TokenizeError {
@@ -52,6 +69,7 @@ mod tokenizer {
                 Token::Semicolon => "SEMICOLON ; null",
                 Token::Equal => "EQUAL = null",
                 Token::EqualEqual => "EQUAL_EQUAL == null",
+                Token::Bang => "BANG ! null",
             };
 
             write!(f, "{}", p)
@@ -74,6 +92,7 @@ mod tokenizer {
                 '.' => Ok(Token::Dot),
                 '*' => Ok(Token::Star),
                 '=' => Ok(Token::Equal),
+                '!' => Ok(Token::Bang),
                 _ => Err(TokenizeError::UnexpectedCharacter(1, value)),
             }
         }
