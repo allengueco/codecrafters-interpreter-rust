@@ -22,11 +22,15 @@ mod tokenizer {
         Equal,
         Semicolon,
         Bang,
+        Greater,
+        Less,
     }
 
     pub enum TokenPair {
         EqualEqual,
         BangEqual,
+        LessEqual,
+        GreaterEqual,
     }
 
     impl<T> TryFrom<(T, T)> for TokenPair
@@ -49,6 +53,8 @@ mod tokenizer {
             let pair = match self {
                 TokenPair::BangEqual => "BANG_EQUAL != null",
                 TokenPair::EqualEqual => "EQUAL_EQUAL == null",
+                TokenPair::GreaterEqual => "GREATER_EQUAL >= null",
+                TokenPair::LessEqual => "Less_EQUAL <= null",
             };
             write!(f, "{}", pair)
         }
@@ -85,6 +91,8 @@ mod tokenizer {
                 Token::Semicolon => "SEMICOLON ; null",
                 Token::Equal => "EQUAL = null",
                 Token::Bang => "BANG ! null",
+                Token::Greater => "GREATER > null",
+                Token::Less => "Less < null",
             };
 
             write!(f, "{}", p)
