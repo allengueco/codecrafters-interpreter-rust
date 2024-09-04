@@ -58,10 +58,10 @@ mod tokenizer {
     impl Display for TokenPair {
         fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
             let pair = match self {
-                TokenPair::BangEqual => "BANG_EQUAL != null",
-                TokenPair::EqualEqual => "EQUAL_EQUAL == null",
-                TokenPair::GreaterEqual => "GREATER_EQUAL >= null",
-                TokenPair::LessEqual => "LESS_EQUAL <= null",
+                TokenPair::BangEqual => "BANG_EQUAL != null\n",
+                TokenPair::EqualEqual => "EQUAL_EQUAL == null\n",
+                TokenPair::GreaterEqual => "GREATER_EQUAL >= null\n",
+                TokenPair::LessEqual => "LESS_EQUAL <= null\n",
                 TokenPair::SlashSlash => "",
             };
             write!(f, "{}", pair)
@@ -87,21 +87,21 @@ mod tokenizer {
     impl Display for Token {
         fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
             let p = match self {
-                Token::LeftParen => "LEFT_PAREN ( null",
-                Token::RightParen => "RIGHT_PAREN ) null",
-                Token::LeftBrace => "LEFT_BRACE { null",
-                Token::RightBrace => "RIGHT_BRACE } null",
-                Token::Star => "STAR * null",
-                Token::Dot => "DOT . null",
-                Token::Plus => "PLUS + null",
-                Token::Minus => "MINUS - null",
-                Token::Comma => "COMMA , null",
-                Token::Semicolon => "SEMICOLON ; null",
-                Token::Equal => "EQUAL = null",
-                Token::Bang => "BANG ! null",
-                Token::Greater => "GREATER > null",
-                Token::Less => "LESS < null",
-                Token::Slash => "SLASH / null",
+                Token::LeftParen => "LEFT_PAREN ( null\n",
+                Token::RightParen => "RIGHT_PAREN ) null\n",
+                Token::LeftBrace => "LEFT_BRACE { null\n",
+                Token::RightBrace => "RIGHT_BRACE } null\n",
+                Token::Star => "STAR * null\n",
+                Token::Dot => "DOT . null\n",
+                Token::Plus => "PLUS + null\n",
+                Token::Minus => "MINUS - null\n",
+                Token::Comma => "COMMA , null\n",
+                Token::Semicolon => "SEMICOLON ; null\n",
+                Token::Equal => "EQUAL = null\n",
+                Token::Bang => "BANG ! null\n",
+                Token::Greater => "GREATER > null\n",
+                Token::Less => "LESS < null\n",
+                Token::Slash => "SLASH / null\n",
                 Token::Space => "",
                 Token::Tab => "",
             };
@@ -167,13 +167,13 @@ fn main() -> anyhow::Result<()> {
                         match pair {
                             TokenPair::SlashSlash => while let Some(_) = iter.next() {},
                             _ => {
-                                println!("{}", pair);
+                                print!("{}", pair);
                                 iter.next();
                             }
                         }
                     } else {
                         match Token::try_from(t1) {
-                            Ok(token) => println!("{}", token),
+                            Ok(token) => print!("{}", token),
                             Err(e) => {
                                 error = true;
                                 writeln!(io::stderr(), "{}", e)
@@ -182,7 +182,7 @@ fn main() -> anyhow::Result<()> {
                     }
                 } else {
                     match Token::try_from(t1) {
-                        Ok(token) => println!("{}", token),
+                        Ok(token) => print!("{}", token),
                         Err(e) => {
                             error = true;
                             writeln!(io::stderr(), "{}", e)
