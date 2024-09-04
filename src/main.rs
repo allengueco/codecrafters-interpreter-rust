@@ -25,6 +25,8 @@ mod tokenizer {
         Greater,
         Less,
         Slash,
+        Tab,
+        Space,
     }
 
     pub enum TokenPair {
@@ -100,6 +102,8 @@ mod tokenizer {
                 Token::Greater => "GREATER > null",
                 Token::Less => "LESS < null",
                 Token::Slash => "SLASH / null",
+                Token::Space => "",
+                Token::Tab => "",
             };
 
             write!(f, "{}", p)
@@ -126,6 +130,8 @@ mod tokenizer {
                 '>' => Ok(Token::Greater),
                 '<' => Ok(Token::Less),
                 '/' => Ok(Token::Slash),
+                ' ' => Ok(Token::Space),
+                '\t' => Ok(Token::Tab),
                 _ => Err(TokenizeError::UnexpectedCharacter(1, value)),
             }
         }
