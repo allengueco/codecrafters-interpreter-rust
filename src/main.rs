@@ -116,6 +116,8 @@ mod tokenizer {
                 '*' => Ok(Token::Star),
                 '=' => Ok(Token::Equal),
                 '!' => Ok(Token::Bang),
+                '>' => Ok(Token::Greater),
+                '<' => Ok(Token::Less),
                 _ => Err(TokenizeError::UnexpectedCharacter(1, value)),
             }
         }
