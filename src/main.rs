@@ -29,9 +29,6 @@ mod tokenizer {
         BangEqual,
     }
 
-    /**
-     *
-     */
     impl<T> TryFrom<(T, T)> for TokenPair
     where
         T: TryInto<Token>,
@@ -154,6 +151,14 @@ fn main() -> anyhow::Result<()> {
                             }?,
                         };
                     }
+                } else {
+                    match Token::try_from(t1) {
+                        Ok(token) => println!("{}", token),
+                        Err(e) => {
+                            error = true;
+                            writeln!(io::stderr(), "{}", e)
+                        }?,
+                    };
                 }
             }
             println!("EOF  null");
