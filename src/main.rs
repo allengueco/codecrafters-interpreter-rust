@@ -2,7 +2,12 @@ use std::env;
 use std::fs;
 use std::io::{self, Write};
 
+use clap::Parser;
+use cli::Args;
+use cli::Commands;
 use tokenizer::Token;
+use tokenizer::TokenPair;
+use tokenizer::TokenizeError;
 mod tokenizer {
     use std::fmt::Display;
 
@@ -27,7 +32,24 @@ mod tokenizer {
         BangEqual,
     }
 
-    pub trait Pair {}
+    /**
+     *
+     */
+    impl<T> TryFrom<(T, T)> for TokenPair
+    where
+        T: TryInto<Token>,
+    {
+        type Error = ();
+
+        fn try_from(value: (T, T)) -> Result<TokenPair, ()> {
+            match (value.0.try_into(), value.1.try_into()) {
+                (Ok(Token::Equal), Ok(Token::Equal)) => Ok(TokenPair::EqualEqual),
+                (Ok(Token::Bang), Ok(Token::Equal)) => Ok(TokenPair::BangEqual),
+                _ => Err(()),
+            }
+        }
+    }
+
     impl Display for TokenPair {
         fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
             let pair = match self {
@@ -98,63 +120,52 @@ mod tokenizer {
         }
     }
 }
-fn main() {
-    let args: Vec<String> = env::args().collect();
-    if args.len() < 3 {
-        writeln!(io::stderr(), "Usage: {} tokenize <filename>", args[0]).unwrap();
-        return;
+
+mod cli {
+    use clap::{Parser, Subcommand};
+
+    #[derive(Parser, Debug)]
+    pub struct Args {
+        #[command(subcommand)]
+        pub cmd: Commands,
     }
 
-    let command = &args[1];
-    let filename = &args[2];
+    #[derive(Subcommand, Debug, Clone)]
+    pub enum Commands {
+        Tokenize { filename: String },
+    }
+}
+fn main() -> anyhow::Result<()> {
+    let args = Args::parse();
 
-    match command.as_str() {
-        "tokenize" => {
-            // You can use print statements as follows for debugging, they'll be visible when running tests.
-            writeln!(io::stderr(), "Logs from your program will appear here!").unwrap();
-
+    match args.cmd {
+        Commands::Tokenize { filename } => {
             let mut error = false;
-            if let Ok(file_contents) = fs::read_to_string(filename) {
-                let mut iter = file_contents.chars().peekable();
-                while let Some(c) = &iter.next() {
-                    match Token::try_from(*c) {
-                        Ok(token) => match token {
-                            // if the current token is =
-                            Token::Equal => {
-                                // we peek the next token if it exists
-                                if let Some(c) = iter.peek() {
-                                    // if the next is also an equal,
-                                    if *c == '=' {
-                                        iter.next();
-                                        println!("{}", Token::EqualEqual)
-                                    } else {
-                                        // if it doesn't exist, then we are at the end
-                                        println!("{}", Token::Equal)
-                                    }
-                                } else {
-                                    println!("{}", Token::Equal)
-                                }
-                            }
-                            _ => println!("{}", token),
-                        },
-                        Err(err) => {
-                            error = true;
-                            writeln!(io::stderr(), "{}", err).unwrap()
-                        }
+            let file_contents = fs::read_to_string(filename)?;
+            let mut iter = file_contents.chars().peekable();
+            while let Some(t1) = iter.next() {
+                // check if the next symbol can be one combined
+                if let Some(next) = iter.peek() {
+                    if let Ok(pair) = TokenPair::try_from((t1, *next)) {
+                        println!("{}", pair);
+                        iter.next();
                     }
+                } else {
+                    match Token::try_from(t1) {
+                        Ok(token) => println!("{}", token),
+                        Err(e) => {
+                            error = true;
+                            writeln!(io::stderr(), "{}", e)
+                        }?,
+                    };
                 }
-                println!("EOF  null");
-            } else {
-                writeln!(io::stderr(), "Failed to read file {}", filename).unwrap();
             }
-
+            println!("EOF  null");
             if error {
-                std::process::exit(65)
+                std::process::exit(65);
+            } else {
+                Ok(())
             }
-        }
-        _ => {
-            writeln!(io::stderr(), "Unknown command: {}", command).unwrap();
-            return;
         }
     }
 }
