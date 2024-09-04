@@ -159,7 +159,7 @@ fn main() -> anyhow::Result<()> {
                 if let Some(next) = iter.peek() {
                     if let Ok(pair) = TokenPair::try_from((t1, *next)) {
                         match pair {
-                            TokenPair::SlashSlash => while let Some('\n') = iter.next() {},
+                            TokenPair::SlashSlash => while let Some(_) = iter.next() {},
                             _ => {
                                 println!("{}", pair);
                                 iter.next();
