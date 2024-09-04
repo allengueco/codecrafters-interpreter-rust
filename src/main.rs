@@ -1,4 +1,3 @@
-use std::env;
 use std::fs;
 use std::io::{self, Write};
 
@@ -7,7 +6,6 @@ use cli::Args;
 use cli::Commands;
 use tokenizer::Token;
 use tokenizer::TokenPair;
-use tokenizer::TokenizeError;
 mod tokenizer {
     use std::fmt::Display;
 
@@ -22,7 +20,6 @@ mod tokenizer {
         Minus,
         Comma,
         Equal,
-        EqualEqual,
         Semicolon,
         Bang,
     }
@@ -90,7 +87,6 @@ mod tokenizer {
                 Token::Comma => "COMMA , null",
                 Token::Semicolon => "SEMICOLON ; null",
                 Token::Equal => "EQUAL = null",
-                Token::EqualEqual => "EQUAL_EQUAL == null",
                 Token::Bang => "BANG ! null",
             };
 
