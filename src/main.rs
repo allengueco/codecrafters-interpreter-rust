@@ -43,6 +43,8 @@ mod tokenizer {
             match (value.0.try_into(), value.1.try_into()) {
                 (Ok(Token::Equal), Ok(Token::Equal)) => Ok(TokenPair::EqualEqual),
                 (Ok(Token::Bang), Ok(Token::Equal)) => Ok(TokenPair::BangEqual),
+                (Ok(Token::Less), Ok(Token::Equal)) => Ok(TokenPair::LessEqual),
+                (Ok(Token::Greater), Ok(Token::Equal)) => Ok(TokenPair::GreaterEqual),
                 _ => Err(()),
             }
         }
