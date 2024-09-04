@@ -24,12 +24,14 @@ mod tokenizer {
         Bang,
         Greater,
         Less,
+        Slash,
     }
 
     pub enum TokenPair {
         EqualEqual,
         BangEqual,
         LessEqual,
+        SlashSlash,
         GreaterEqual,
     }
 
@@ -45,6 +47,7 @@ mod tokenizer {
                 (Ok(Token::Bang), Ok(Token::Equal)) => Ok(TokenPair::BangEqual),
                 (Ok(Token::Less), Ok(Token::Equal)) => Ok(TokenPair::LessEqual),
                 (Ok(Token::Greater), Ok(Token::Equal)) => Ok(TokenPair::GreaterEqual),
+                (Ok(Token::Slash), Ok(Token::Slash)) => Ok(TokenPair::SlashSlash),
                 _ => Err(()),
             }
         }
@@ -57,6 +60,7 @@ mod tokenizer {
                 TokenPair::EqualEqual => "EQUAL_EQUAL == null",
                 TokenPair::GreaterEqual => "GREATER_EQUAL >= null",
                 TokenPair::LessEqual => "LESS_EQUAL <= null",
+                TokenPair::SlashSlash => "",
             };
             write!(f, "{}", pair)
         }
@@ -95,6 +99,7 @@ mod tokenizer {
                 Token::Bang => "BANG ! null",
                 Token::Greater => "GREATER > null",
                 Token::Less => "LESS < null",
+                Token::Slash => "SLASH / null",
             };
 
             write!(f, "{}", p)
@@ -152,8 +157,13 @@ fn main() -> anyhow::Result<()> {
                 // check if the next symbol can be one combined
                 if let Some(next) = iter.peek() {
                     if let Ok(pair) = TokenPair::try_from((t1, *next)) {
-                        println!("{}", pair);
-                        iter.next();
+                        match pair {
+                            TokenPair::SlashSlash => while let Some('\n') = iter.next() {},
+                            _ => {
+                                println!("{}", pair);
+                                iter.next();
+                            }
+                        }
                     } else {
                         match Token::try_from(t1) {
                             Ok(token) => println!("{}", token),
