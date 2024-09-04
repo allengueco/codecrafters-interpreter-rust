@@ -125,6 +125,7 @@ mod tokenizer {
                 '!' => Ok(Token::Bang),
                 '>' => Ok(Token::Greater),
                 '<' => Ok(Token::Less),
+                '/' => Ok(Token::Slash),
                 _ => Err(TokenizeError::UnexpectedCharacter(1, value)),
             }
         }
