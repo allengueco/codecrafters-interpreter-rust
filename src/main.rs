@@ -56,7 +56,7 @@ mod tokenizer {
                 TokenPair::BangEqual => "BANG_EQUAL != null",
                 TokenPair::EqualEqual => "EQUAL_EQUAL == null",
                 TokenPair::GreaterEqual => "GREATER_EQUAL >= null",
-                TokenPair::LessEqual => "Less_EQUAL <= null",
+                TokenPair::LessEqual => "LESS_EQUAL <= null",
             };
             write!(f, "{}", pair)
         }
