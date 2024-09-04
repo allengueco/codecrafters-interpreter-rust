@@ -94,7 +94,7 @@ mod tokenizer {
                 Token::Equal => "EQUAL = null",
                 Token::Bang => "BANG ! null",
                 Token::Greater => "GREATER > null",
-                Token::Less => "Less < null",
+                Token::Less => "LESS < null",
             };
 
             write!(f, "{}", p)
