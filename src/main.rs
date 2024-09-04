@@ -144,7 +144,7 @@ fn main() -> anyhow::Result<()> {
                 if let Some(next) = iter.peek() {
                     if let Ok(pair) = TokenPair::try_from((t1, *next)) {
                         println!("{}", pair);
-                        // iter.next();
+                        iter.next();
                     }
                 } else {
                     match Token::try_from(t1) {
