@@ -142,6 +142,7 @@ fn main() -> anyhow::Result<()> {
             while let Some(t1) = iter.next() {
                 // check if the next symbol can be one combined
                 if let Some(next) = iter.peek() {
+                    writeln!(io::stderr(), "{}, {}", t1, next);
                     if let Ok(pair) = TokenPair::try_from((t1, *next)) {
                         println!("{}", pair);
                         iter.next();
